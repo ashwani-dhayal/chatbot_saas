@@ -51,9 +51,9 @@ bcrypt==3.2.0               # pinned for passlib compatibility
 pydantic-settings
 python-dotenv
 httpx
-python-qdrant-client==1.7.3 # vector search logic testing
+qdrant-client==1.7.3 # vector search logic testing
 # Added for persistent API key encryption
 cryptography==42.0.8
 
 # Web search (optional — used by RAG graph web_search_node)
-tavily-python
+tavily-pythonemail-validator
