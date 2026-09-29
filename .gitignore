@@ -43,3 +43,5 @@
 *.sln
 *.sw?
 Thumbs.db
+*.docx
+*.doc
