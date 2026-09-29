@@ -101,8 +101,11 @@ async def startup():
 
     # Log which LLM we'll be using and trigger connection check at startup
     logger.info(f"LLM provider: {settings.llm_provider}")
-    if settings.llm_provider == "local":
-        get_llm()   # triggers LM Studio connection + model detection
+    try:
+        if settings.llm_provider == "local":
+            get_llm()   # triggers LM Studio connection + model detection
+    except Exception as exc:
+        logger.warning(f"LLM connection check during startup: {exc}")
 
     logger.info("=== Startup complete. API docs: http://localhost:8001/docs ===")
 

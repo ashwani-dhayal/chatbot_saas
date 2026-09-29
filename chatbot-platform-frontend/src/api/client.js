@@ -25,6 +25,13 @@ async function request(endpoint, options = {}) {
 
   const data = await response.json();
   if (!response.ok) {
+    if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+      const errorMsg = data.errors.map(err => {
+        const field = Array.isArray(err.loc) ? err.loc[err.loc.length - 1] : '';
+        return field ? `${field}: ${err.msg}` : err.msg;
+      }).join(' | ');
+      throw new Error(errorMsg || data.detail || 'Validation failed');
+    }
     throw new Error(data.detail || 'Something went wrong');
   }
 

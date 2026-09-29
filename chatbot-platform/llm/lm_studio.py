@@ -36,13 +36,26 @@ def get_llm() -> ChatOpenAI:
                 timeout=60,
             )
         except Exception as exc:
-            logger.warning(
-                f"LM Studio unreachable ({exc}) — falling back to OpenAI gpt-4o"
-            )
-            _instance = ChatOpenAI(
-                model="gpt-4o",
-                api_key=settings.openai_api_key,
-            )
+            if settings.openai_api_key:
+                logger.warning(
+                    f"LM Studio unreachable ({exc}) — falling back to OpenAI gpt-4o"
+                )
+                _instance = ChatOpenAI(
+                    model="gpt-4o",
+                    api_key=settings.openai_api_key,
+                )
+            else:
+                logger.warning(
+                    f"LM Studio unreachable ({exc}) and OPENAI_API_KEY not set. Using local configuration ({settings.lm_studio_model})."
+                )
+                _instance = ChatOpenAI(
+                    base_url=settings.lm_studio_url,
+                    api_key="lm-studio",
+                    model=settings.lm_studio_model,
+                    temperature=0.1,
+                    max_tokens=1024,
+                    timeout=60,
+                )
     else:
         logger.info("LLM provider = openai — using gpt-4o")
         _instance = ChatOpenAI(

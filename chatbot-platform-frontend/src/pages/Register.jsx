@@ -16,14 +16,21 @@ export default function Register() {
   const { loading, error, call, clearError } = useApi();
   const navigate = useNavigate();
 
+  const [clientError, setClientError] = useState('');
+
   const handleChange = (e) => {
+    if (clientError) setClientError('');
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.password.length < 8) {
+      setClientError("Password must be at least 8 characters long.");
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
+      setClientError("Passwords do not match.");
       return;
     }
 
@@ -47,7 +54,7 @@ export default function Register() {
           </p>
         </div>
 
-        <ErrorBanner message={error} onDismiss={clearError} />
+        <ErrorBanner message={clientError || error} onDismiss={() => { setClientError(''); clearError(); }} />
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           <div>
@@ -76,11 +83,14 @@ export default function Register() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-gray-700 block mb-1">Password</label>
+              <label className="text-sm font-medium text-gray-700 block mb-1">
+                Password <span className="text-xs text-gray-500 font-normal">(min 8 chars)</span>
+              </label>
               <input
                 name="password"
                 type="password"
                 required
+                minLength={8}
                 className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 placeholder="••••••••"
                 value={formData.password}
@@ -93,6 +103,7 @@ export default function Register() {
                 name="confirmPassword"
                 type="password"
                 required
+                minLength={8}
                 className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 placeholder="••••••••"
                 value={formData.confirmPassword}
